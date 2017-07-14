@@ -30,4 +30,4 @@ persistence:
   accessMode: ReadWriteMany
   size: 16Gi
 
-{{ .ClusterStorage }}
+clusterStorage: true
