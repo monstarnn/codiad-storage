@@ -1,0 +1,33 @@
+## Codiad image and tag
+## ref: https://hub.docker.com/r/wernight/codiad/tags/
+##
+image: wernight/codiad:alpine
+
+## Specify a imagePullPolicy
+## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+#
+
+## Kubernetes configuration
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+##
+serviceType: ClusterIP
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 64Mi
+    cpu: 50m
+
+persistence:
+  enabled: true
+  storageClass: standard
+  codiadPath: "codiad"
+  accessMode: ReadWriteMany
+  size: 16Gi
+
+{{ .ClusterStorage }}

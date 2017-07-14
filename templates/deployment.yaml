@@ -1,0 +1,65 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        ports:
+        - name: http
+          containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        volumeMounts:
+        # workspaces
+        - mountPath: /code/workspace
+          name: storage
+          subPath: {{ .Values.persistence.codiadPath }}/workspace
+        # data
+        - mountPath: /code/data
+          name: storage
+          subPath: {{ .Values.persistence.codiadPath }}/data
+        # themes
+        - mountPath: /code/themes
+          name: storage
+          subPath: {{ .Values.persistence.codiadPath }}/themes
+        # plugins
+        - mountPath: /code/plugins
+          name: storage
+          subPath: {{ .Values.persistence.codiadPath }}/plugins
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      volumes:
+        - name: storage
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: "{{ printf "%s-%s" .Release.Name .Chart.Name | trunc 24 }}"
+          {{- else }}
+          emptyDir: {}
+          {{- end }}

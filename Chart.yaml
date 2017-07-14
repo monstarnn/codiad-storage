@@ -1,0 +1,17 @@
+name: codiad
+version: 1.0.1
+description: Codiad is a web-based IDE framework with a small footprint and minimal requirements.
+keywords:
+- codiad
+- ide
+- php
+- web
+- editor
+home: http://codiad.com/
+icon: https://raw.githubusercontent.com/Codiad/Codiad/gh-pages/logo.png
+sources:
+- https://github.com/Codiad/Codiad
+maintainers:
+- name: Kent Safranski
+  email: kent@fluidbyte.net
+engine: gotpl
